@@ -1,0 +1,16 @@
+{
+  "name": "@local/dsh-git-bash",
+  "version": "1.0.2",
+  "private": true,
+  "type": "module",
+  "description": "Add a standalone Windows Git Bash preset without changing Standard or existing session preset identities (Full access only).",
+  "exports": { ".": "./index.js", "./diagnostics": "./diagnostics.js", "./locale/*.json": "./locale/*.json", "./icon": "./icon.svg" },
+  "files": ["index.js", "diagnostics.js", "cordis.patch.yml", "locale", "icon.svg", "README.md"],
+  "peerDependencies": {
+    "@deepseek-ai/dsh-bash-local": "0.2.2-rc.3",
+    "@deepseek-ai/dsh-sandbox": "0.2.2-rc.3",
+    "@deepseek-ai/schemastery": "~3.19.0"
+  },
+  "engines": { "dsh": "0.2.2-rc.3" },
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+}
