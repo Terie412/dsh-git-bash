@@ -19,7 +19,6 @@
               - id: git-bash-executor
                 name: '@local/dsh-git-bash'
                 config:
-                  bashPath: 'E:/Softwares/Git/bin/bash.exe'
                   timeoutMs: 60000
               - id: persona
                 name: '@deepseek-ai/dsh-persona'

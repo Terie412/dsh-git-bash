@@ -6,6 +6,7 @@
 
 - **独立的 Git Bash 模式**：新建会话时可选，不替换标准模式，也不改变现有会话。
 - **直接使用 Git for Windows**：无需 WSL，不经过 PowerShell 转发。
+- **自动找到 Git**：通常无需填写安装路径，也支持已加入 PATH 的便携版 Git。
 - **保留常用能力**：文件读写、搜索、后台任务、命令取消和长输出处理仍可使用。
 
 ## 使用前准备
@@ -17,7 +18,7 @@
 ## 安装
 
 1. 将本仓库下载或克隆到本机的固定目录，安装后不要移动或删除。
-2. **确认 Git 安装位置**：当前默认使用 `E:/Softwares/Git/bin/bash.exe`。如果你的安装位置不同，请在 `cordis.patch.yml` 中将 `bashPath` 改成实际的 `bin/bash.exe` 路径，例如 `C:/Program Files/Git/bin/bash.exe`。
+2. 确保已安装 Git for Windows。插件会自动查找，无需手动填写安装路径；便携版请先将 Git 的 `cmd` 或 `bin` 目录加入 PATH，再重启 DSH。
 3. 在 DSH 中让助手安装该本地扩展包，例如：
 
    > 请将 C:/你的目录/dsh-git-bash 作为本地扩展包安装到当前 DSH 配置。
@@ -36,7 +37,13 @@
 
 **看不到 Git Bash 模式？**
 
-确认扩展包已启用、DSH 版本匹配，并检查上面的 Git 安装路径是否正确。修正本地扩展包后，请让助手重新安装并按提示重启 DSH。
+确认扩展包已启用、DSH 版本匹配且 Git for Windows 已安装。如果刚安装 Git 或修改过 PATH，请重启 DSH。
+
+**自动查找失败，或想指定某个 Git 安装？**
+
+插件优先使用手动指定的路径，其次读取 Windows 安装记录，最后查找 PATH 中的 Git，不会选择 WSL 的 Bash。
+
+如需手动指定，可让助手在本地扩展包的 `cordis.patch.yml` 中，为 `git-bash-executor` 的 `config` 添加 `bashPath`，指向所需的 `bin/bash.exe`（例如 `C:/Program Files/Git/bin/bash.exe`），然后重新安装扩展包并按提示重启 DSH。手动指定的路径无效时会报错，不会悄悄切换到其他 Git；删除该设置即可恢复自动查找。
 
 **为什么提示命令不能执行？**
 

@@ -35,7 +35,9 @@ const Subprocess = r('@deepseek-ai/dsh-subprocess-local').default;
   ctx.provide('systemPrompt', { section: s => { sections.push(s); return () => {}; } });
   try {
     await ctx.plugin(Subprocess);
-    await ctx.plugin(Executor, { bashPath: 'E:/Softwares/Git/bin/bash.exe', graceMs: 100, timeoutMs: 2000 });
+    await ctx.plugin(Executor, { graceMs: 100, timeoutMs: 2000 });
+    assert.ok(fs.statSync(ctx.shell.bashPath).isFile());
+    console.log('PASS executor activates without bashPath; detected:', ctx.shell.bashPath);
     const run = async (command, extra = {}) => (await ctx.shell.execute(ctx.shell.resolve({ command, workdir: cwd, sandboxPolicy: full, ...extra }))).result();
     let value = await run("printf '%s\\n' \"$BASH\" \"$BASH_VERSION\"; pwd; printf '中文输出\\n'; git --version; node --version");
     assert.equal(value.exitCode, 0, value.stderr.text);
@@ -72,6 +74,7 @@ const Subprocess = r('@deepseek-ai/dsh-subprocess-local').default;
     assert.equal(preset.config.id, 'git-bash');
     assert.equal(preset.config.name, 'Git Bash');
     const group = preset.config.plugins[0]; assert.equal(group.isolate.shell, true);
+    assert.equal(group.config.find(x => x.id === 'git-bash-executor').config.bashPath, undefined);
     assert.equal(group.config.find(x => x.id === 'tool-bash').disabled, false);
     assert.equal(group.config.find(x => x.id === 'tool-pwsh').disabled, true);
     const shipped = yaml.load(fs.readFileSync(path.join(process.env.DSH_INSTALL_DIR, '../dsh-web-app/presets/standard.patch.yml'), 'utf8'), { schema })[0].insert[0].config.plugins;

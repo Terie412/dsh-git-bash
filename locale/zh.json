@@ -1,1 +1,1 @@
-{"meta":{"title":"dsh-git-bash","description":"新增独立 Git Bash 模式，不覆盖标准模式。使用 Git for Windows Bash，保留文件工具及后台任务；仅支持 Full access。安装后新建会话并选择 Git Bash。"}}
+{"meta":{"title":"dsh-git-bash","description":"新增独立 Git Bash 模式，不覆盖标准模式。自动查找 Git for Windows Bash，保留文件工具及后台任务；仅支持 Full access。安装后新建会话，在首次发送消息前选择 Git Bash。"}}

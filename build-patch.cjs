@@ -28,6 +28,5 @@ fs.writeFileSync(path.join(__dirname, 'cordis.patch.yml'), `# Standalone preset;
               - id: git-bash-executor
                 name: '@local/dsh-git-bash'
                 config:
-                  bashPath: 'E:/Softwares/Git/bin/bash.exe'
                   timeoutMs: 60000
 ${nested.split('\n').map(line => line ? '  ' + line : line).join('\n')}\n`);

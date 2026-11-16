@@ -1,5 +1,4 @@
-import { isAbsolute, dirname, join } from 'node:path';
-import { statSync } from 'node:fs';
+import { resolveGitBashPath } from './git-bash-path.js';
 import { LocalBashExecutor } from '@deepseek-ai/dsh-bash-local';
 import { SandboxUnavailableError } from '@deepseek-ai/dsh-sandbox';
 import z from '@deepseek-ai/schemastery';
@@ -8,20 +7,14 @@ export default class GitBashExecutor extends LocalBashExecutor {
   static inject = ['subprocess', 'sandboxPolicy', 'systemPrompt'];
   static Config = z.object({
     ...LocalBashExecutor.Config.dict,
-    bashPath: z.string().required(),
+    bashPath: z.string().description('Optional absolute Git for Windows bin/bash.exe path. Leave unset to detect Git automatically.'),
   });
 
   constructor(ctx, config) {
     super(ctx, config);
     if (process.platform !== 'win32') throw new Error('Git Bash requires Windows.');
-    if (!isAbsolute(config.bashPath) || !statSync(config.bashPath).isFile()) {
-      throw new Error('Git Bash executable must be an existing absolute file path.');
-    }
-    // Verify that this is a Git for Windows installation, not WSL's bash shim.
-    const root = dirname(dirname(config.bashPath));
-    if (!statSync(join(root, 'cmd', 'git.exe')).isFile()) {
-      throw new Error('bashPath must point to the bin/bash.exe in Git for Windows.');
-    }
+    // Resolve once on activation; commands reuse this validated installation.
+    this.bashPath = resolveGitBashPath(config.bashPath);
     ctx.effect(() => ctx.systemPrompt.section({
       name: 'local:git-bash',
       order: 1001,
@@ -48,7 +41,7 @@ export default class GitBashExecutor extends LocalBashExecutor {
       ...spec,
       // BASH_ENV can otherwise execute startup scripts even for a non-login shell.
       env: { ...spec.env, BASH_ENV: '', ENV: '', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' },
-    }, [this.config.bashPath, '--noprofile', '--norc', '-c', spec.command]);
+    }, [this.bashPath, '--noprofile', '--norc', '-c', spec.command]);
     const base = execution.result.bind(execution);
     let result;
     execution.result = () => result ??= base().then(value => ({ ...value, sandbox: { mode, denied: false } }));

@@ -1,1 +1,1 @@
-{"meta":{"title":"dsh-git-bash","description":"Adds a standalone Git Bash preset without overriding Standard. Keeps file tools and background jobs. Windows and Full access only. Select Git Bash in a new session before the first message."}}
+{"meta":{"title":"dsh-git-bash","description":"Adds a standalone Git Bash preset without overriding Standard. Automatically finds Git for Windows. Keeps file tools and background jobs. Windows and Full access only. Select Git Bash in a new session before the first message."}}
